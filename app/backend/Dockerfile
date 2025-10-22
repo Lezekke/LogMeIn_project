@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY app.py .
+COPY . .
 
 # Variables d'environnement par défaut
 ENV DB_HOST=db
