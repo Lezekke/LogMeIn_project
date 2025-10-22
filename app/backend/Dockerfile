@@ -22,4 +22,4 @@ ENV DB_PORT=5432
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["sh", "-c", "python wait_for_db.py && python app.py"]

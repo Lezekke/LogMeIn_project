@@ -9,6 +9,11 @@ services:
       POSTGRES_PASSWORD: logs_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logs_user -d logs_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - logmein-net
     
