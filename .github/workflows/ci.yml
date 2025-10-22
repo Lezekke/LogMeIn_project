@@ -36,13 +36,13 @@ jobs:
 
       - name: Install backend dependencies
         run: |
-          cd backend
+          cd app/backend
           pip install -r requirements.txt
           pip install -r requirements.dev.txt  # pour les tests
 
       - name: Run backend tests
         run: |
-          cd backend
+          cd app/backend
           export DB_HOST=localhost
           export DB_NAME=logs_db
           export DB_USER=logs_user
@@ -58,9 +58,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker images
-        run: docker-compose build
-
-      - name: (Optional) Push images to registry
-        # Tu peux ajouter un push vers Docker Hub ou GHCR plus tard
-        run: echo "Skipping image push for now"
+      - name: Build Docker images for LogMeIn app
+        run: |
+          cd app
+          docker-compose build
