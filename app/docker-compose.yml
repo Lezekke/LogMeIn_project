@@ -22,8 +22,7 @@ services:
       DB_USER: logs_user
       DB_PASSWORD: logs_password
       DB_PORT: 5432
-    ports:
-      - "5000:5000"  # optionnel : utile pour debug, mais pas nécessaire en prod
+
     depends_on:
       - db
     networks:
