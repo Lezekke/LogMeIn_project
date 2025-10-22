@@ -1,0 +1,66 @@
+name: CI - Test LogMeIn App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: logs_db
+          POSTGRES_USER: logs_user
+          POSTGRES_PASSWORD: logs_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pip install -r requirements.dev.txt  # pour les tests
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          export DB_HOST=localhost
+          export DB_NAME=logs_db
+          export DB_USER=logs_user
+          export DB_PASSWORD=logs_password
+          export DB_PORT=5432
+          sh run_tests.sh
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test  # ne build que si les tests passent
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker images
+        run: docker-compose build
+
+      - name: (Optional) Push images to registry
+        # Tu peux ajouter un push vers Docker Hub ou GHCR plus tard
+        run: echo "Skipping image push for now"
